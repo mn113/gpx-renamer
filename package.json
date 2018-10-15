@@ -1,0 +1,22 @@
+{
+  "name": "gpx-renamer",
+  "version": "1.0.0",
+  "description": "Renames Strava GPX files",
+  "main": "renameGpxFiles.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mn113/gpx-renamer.git"
+  },
+  "author": "M. Nicholson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mn113/gpx-renamer/issues"
+  },
+  "homepage": "https://github.com/mn113/gpx-renamer#readme",
+  "dependencies": {
+    "xml2js": "^0.4.19"
+  }
+}
