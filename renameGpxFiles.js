@@ -12,7 +12,8 @@
  */
 
  // New filename options:
-const mode = 'suffix';
+const idOnly = true;   // only rename files like 949473723.gpx
+const mode = 'suffix_with_date';
 const sep = ' - ';
 
 const fs = require('fs');
@@ -37,10 +38,12 @@ new Promise((resolve, reject) => {
     });    
 })
 .then(files => {
-    var gpxFileObjects = files
-        .filter(f => f.match(/\.gpx$/i))
-        .map(path.parse);   // object with base, name & ext
-    
+    var gpxFiles = files.filter(f => f.match(/\.gpx$/i))    // match extension
+    if (idOnly) {
+        gpxFiles = gpxFiles.filter(f => f.match(/^\d{5,10}\.gpx$/i));
+    }
+    var gpxFileObjects = gpxFiles.map(path.parse);  // object with base, name & ext
+
     renameAll(gpxFileObjects);
 })
 .catch(e => console.log(e));
@@ -64,6 +67,9 @@ function readFilePromise(fileObj) {
     .then(data => {
         // Read contents:
         parseString(data, (err, result) => {
+            var trackName = "",
+                date = "";
+            
             if (err) console.log(err);
             
             // Safely check for a named track:
@@ -74,37 +80,49 @@ function readFilePromise(fileObj) {
                 result.gpx.trk[0].name.length &&
                 result.gpx.trk[0].name[0].length
             ) {
-                renameFile(fileObj, result.gpx.trk[0].name[0]);
-                renamedCount++;
+                trackName = result.gpx.trk[0].name[0];
             }
+
+            console.dir(result.gpx);
+
+            if (result.gpx &&
+                result.gpx.metadata &&
+                result.gpx.metadata[0].time
+            ) {
+                date = result.gpx.metadata[0].time[0].slice(0,10);
+            }
+
+            renameFile(fileObj, trackName, date);
+            renamedCount++;
+
         });
     })
     .catch(e => console.log(e));
 }
 
-function renameFile(file, trackName) {
-    console.log('Renaming', file.base, 'with', trackName, 'using', mode);
-    // 3 different styles of renaming, based on the options mode:
+function renameFile(file, trackName, date) {
+    var newName;
+    console.log('Renaming', file.base, 'with name', trackName, 'and date', date, 'using', mode);
+    // Different examples of renaming, based on your mode setting:
     switch(mode) {
         case 'replace':
-            fs.rename(
-                path.join(filePath, file.base),
-                path.join(filePath, trackName + '.gpx'),
-                throwErr);
+            newName = trackName + '.gpx';
             break;
         case 'prefix':
-            fs.rename(
-                path.join(filePath, file.base),
-                path.join(filePath, trackName + sep + file.name + '.gpx'),
-                throwErr);
+            newName = trackName + sep + file.name + '.gpx';
             break;
         case 'suffix':
-            fs.rename(
-                path.join(filePath, file.base),
-                path.join(filePath, file.name + sep + trackName + '.gpx'),
-                throwErr);
+            newName = file.name + sep + trackName + '.gpx';
+            break;
+        case 'suffix_with_date':
+            newName = file.name + sep + date + sep + trackName + '.gpx';
             break;
     }
+    fs.rename(
+        path.join(filePath, file.base),
+        path.join(filePath, newName),
+        throwErr
+    );
 }
 
 const throwErr = (err) => { if (err) throw err };
