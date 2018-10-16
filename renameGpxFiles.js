@@ -32,6 +32,9 @@ var filePath = path.join(__dirname, args[0]);
 
 new Promise((resolve, reject) => {
     // Look for .gpx files:
+    if (!fs.existsSync(filePath) || !fs.lstatSync(filePath).isDirectory()) {
+        reject(`${filePath} is not a valid directory`);
+    }
     fs.readdir(filePath, (err, files) => {
         if (err) reject(err);
         else resolve(files);
@@ -83,8 +86,7 @@ function readFilePromise(fileObj) {
                 trackName = result.gpx.trk[0].name[0];
             }
 
-            console.dir(result.gpx);
-
+            // Safely check for a datetime field:
             if (result.gpx &&
                 result.gpx.metadata &&
                 result.gpx.metadata[0].time
@@ -92,6 +94,7 @@ function readFilePromise(fileObj) {
                 date = result.gpx.metadata[0].time[0].slice(0,10);
             }
 
+            // JUST DO IT!
             renameFile(fileObj, trackName, date);
             renamedCount++;
 

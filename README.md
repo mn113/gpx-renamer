@@ -6,7 +6,9 @@ A Node script to rename the files you get from your Strava data export.
 
 ## Usage
 
-`node renameGpxFiles.js path/to/folder/of/files`
+`npm install`
+
+`node renameGpxFiles.js path/to/folder/of/gpx/files`
 
 ## Result
 
@@ -24,7 +26,7 @@ Just download it and hardcode the style you prefer.
 
 ## Issues
 
-[Issues](/issues)
+[Post an issue](issues)
 
 ## Licence
 
