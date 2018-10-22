@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/mn113/gpx-renamer#readme",
   "dependencies": {
+    "filenamify": "^2.1.0",
     "xml2js": "^0.4.19"
   }
 }

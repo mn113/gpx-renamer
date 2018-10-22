@@ -19,6 +19,7 @@ const sep = ' - ';
 const fs = require('fs');
 const path = require('path');
 const parseString = require('xml2js').parseString;
+const filenamify = require('filenamify');
 
 var renamedCount = 0;
 
@@ -83,7 +84,7 @@ function readFilePromise(fileObj) {
                 result.gpx.trk[0].name.length &&
                 result.gpx.trk[0].name[0].length
             ) {
-                trackName = result.gpx.trk[0].name[0];
+                trackName = filenamify(result.gpx.trk[0].name[0], {replacement: '-'});
             }
 
             // Safely check for a datetime field:
