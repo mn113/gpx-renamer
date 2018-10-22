@@ -28,16 +28,12 @@ var args = process.argv.slice(2);
 if (args.length > 1) throw Error;
 if (args.length === 0) args = ['.'];
 
-var filePath = path.join(__dirname, args[0]);
-if (!fs.lstatSync(filePath).isDirectory()) {
-    console.log(`Given path ${filePath} doesn't look like a directory; stopping.`);
-    return false;
-}
+var filePath = path.resolve(args[0]);
 
 new Promise((resolve, reject) => {
     // Look for .gpx files:
     if (!fs.existsSync(filePath) || !fs.lstatSync(filePath).isDirectory()) {
-        reject(`${filePath} is not a valid directory`);
+        reject(`Given path ${filePath} doesn't look like a directory; stopping.`);
     }
     fs.readdir(filePath, (err, files) => {
         if (err) reject(err);
