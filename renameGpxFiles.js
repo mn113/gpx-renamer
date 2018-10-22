@@ -29,7 +29,10 @@ if (args.length > 1) throw Error;
 if (args.length === 0) args = ['.'];
 
 var filePath = path.join(__dirname, args[0]);
-//if (!filePath.isDirectory()) return false;
+if (!fs.lstatSync(filePath).isDirectory()) {
+    console.log(`Given path ${filePath} doesn't look like a directory; stopping.`);
+    return false;
+}
 
 new Promise((resolve, reject) => {
     // Look for .gpx files:
